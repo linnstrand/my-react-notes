@@ -15,29 +15,21 @@ React has four built-in methods that gets called, in this order, when mounting a
 
 React elements are immutable. Once you create an element, you can’t change its children or attributes.
 
-### Rendering
+### Rendering Elements, Mount and Instancing
 
-Changes in state and props causes re-renders-
+React DOM compares the element and its children to the Browser DOM, and only updates the elements that's diffrent.
 
-### Ref forwarding
+Reacts elements are immutable objects, they are lika a frame in a move. They can't be changed, only exchanged to a new one.
 
-[Ref forwarding](https://reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components) is an opt-in feature that lets some components take a ref they receive, and pass it further down (in other words, “forward” it) to a child.
-This allows a component to reach elements in child components.
-
-### Mount and Instancing
-
-React DOM compares the element and its children to the previous one, and only applies the DOM updates necessary to bring the DOM to the desired state.
-
-First render and mount happens, when you initiate an async action, causing the component to re-render. This will also necessitate unmounting the first instance and mounting the second.
+When a component re-render, it unmounts the first instance and mounts the second.
 While the first instance is unmounted, it still exists in memory and is waiting on the async operation to complete.
-
-When that happens, setLoading(false) and setData(..) are called, these operations are batched and will only cause a single render. When that render happens, the second instance will be unmounted and replaced with the third instance.
+[More on Rendering](https://felixgerschau.com/react-rerender-components/#what-is-rendering).
 
 So why don't we get "Unmounted" errors?
 
 This is because how hooks are designed, each instance of a specific component (and the exact meaning of 'specific' can be a bit murky) shares the same copy of the state setting function, and as long as one instance is mounted, the call will succeed.
 
-Eventually you'll find yourself with a single instance, but the while an async operation is pending, you will have multiple instances. When the async function exists, the old instance will be disregarded.
+While an async operation is pending, you will have multiple instances. When the async function exists, the old instance will be disregarded.
 
 If you were to put that component in a modal, trigger the load and then close the modal, you would get the warning of trying to set state on an unmounted component, as when the modal closes it will remove all mounted instances of the component
 
@@ -50,11 +42,16 @@ If you were to put that component in a modal, trigger the load and then close th
 
 Why not try/catch?
 
-- Only works for imperative code. React components are declarative and specify what should be rendered
+- Only works for imperative code. React components are declarative and specify what should be rendered.
 
 ### Ucontrolled Components
 
 An uncontrolled component keeps the source of truth in the DOM. [Article](https://goshacmd.com/controlled-vs-uncontrolled-inputs-react/). In React, an `<input type="file" />` is always an uncontrolled component because its value can only be set by a user, and not programmatically.
+
+### Ref forwarding
+
+[Ref forwarding](https://reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components) is an opt-in feature that lets some components take a ref they receive, and pass it further down (in other words, “forward” it) to a child.
+This allows a component to reach elements in child components.
 
 ## Hooks
 
@@ -171,13 +168,20 @@ Lets you manage local state of complex components with a reducer:
 
 ## useRef
 
-Returns a mutable object with .current set to “initialValue”.
-Will give you the same object every,
-Mutating .current does not cause a re-render.
+1. Returns a mutable object with .current set to “initialValue”.
+2. Works as a _instance variable_, similar to an instance property on a class, lets you keep a mutable object around.
+3. Will give you the same object every,
+4. Mutating .current does not trigger a re-render.
+5. Commonly refering to a DOM node.
+6. A function can be used for initial value, .current(prop) executes the method.
+7. The reference must be updated either inside a useEffect() callback or inside handlers (event handlers, timer handlers, etc).
 
-Essentially, useRef is like a “box” that can hold a mutable value in its .current property.
-You might be familiar with refs primarily as a way to access the DOM. If you pass a ref object to React with <div ref={myRef} />, React will set its .current property to the corresponding DOM node whenever that node changes.
-It’s handy for keeping any mutable value around similar to how you’d use instance fields in classes.
+[Essentially, useRef is like a “box” that can hold a mutable value in its .current property.](https://reactjs.org/docs/hooks-reference.html#useref)
+
+### Difference to State
+
+- Updating a reference doesn't trigger a re-render.
+- Reference update is synchronous, while state is updated after re-rendering. This might be a problem if you want a ref to change after render. If that's the case, useEffect can delay the update until after mounting. [Focusing on input example](https://dmitripavlutin.com/react-useref-guide/#21-use-case-focusing-an-input).
 
 Unless you’re doing lazy initialization, avoid setting refs during rendering — this can lead to surprising behavior. ????
 
