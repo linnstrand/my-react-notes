@@ -36,6 +36,10 @@ As long as you are careful with type annotations...
 
 Dynamic type used to opt out of type checking. Maybe from a third party. Or before we have decided on how the data should look.
 
+#### Never
+
+WHen we are certain something will never happen, we use the `never` type
+
 ### User Defined Data Types
 
 - Enums: Great for states or options. Fruit.Apple. Loading.Error. Memory efficient custom constants
@@ -59,6 +63,8 @@ Formed from 2+ other types (members). "Either or" values for type. To work with 
 Generics:
 `type StringArray = Array<string>`
 
+### Intersection Types: Merges 2 types.
+
 ### Structural or duck typing
 
 If Two objects have the same shape, they are the same type. Any object with x and y being numbers would fit.
@@ -74,4 +80,35 @@ interface Point {
 
 For when you know something that TS doesn't. `const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement;`. The rule allows conversions from a less specific version to a more specific version, but NOT impossible coercions.
 
-### Intersection Types: Merges 2 types.
+##### Non-null Assertion operator (Postfix !)
+
+To remove null check from a type without explicit checking, write `!` after the expression. For when you KNOW the value isn't null.
+
+## Narrowing Types
+
+The process of refining types to more specific types than declared is called narrowing.
+
+### Type Guards
+
+- check type use `typeof`
+- use `'in`operator to check if property exists.
+- Discriminated unions: Separate an object into 2+ types with different values for a specific property. This property can be used to check type of object.
+- `instanceof` useful for values that can be constructed with `new`
+
+##### User defined type guard
+
+```typescript
+function isFish(pet: Fish | Bird): pet is Fish {
+  return (pet as Fish).swim !== undefined;
+}
+```
+
+### Truthiness narrowing
+
+Falsy: 0
+NaN
+""
+null
+undefined
+
+## Functions
