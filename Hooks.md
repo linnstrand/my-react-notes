@@ -1,72 +1,27 @@
-# React Lifecycle and Hooks
+# Hooks
 
-React has four built-in methods that gets called, in this order, when mounting a component. These are outdated with function components. Hooks lets us split a component based on related pieces rather then split on lifecycle methods.
-
-1. Mounting (adding nodes to the DOM)
-2. Updating (altering existing nodes in the DOM)
-3. Unmounting (removing nodes from the DOM)
-4. Error handling (verifying that your code works and is bug-free)
-
-- constructor: Function components don’t need a constructor. You can initialize the state in the **useState** call.
-- getDerivedStateFromProps: [You probably won’t need it](https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html). But you can Schedule an update while rendering instead.
-- shouldComponentUpdate: See **React.memo**.
-- render: This is the **function component body** itself.
-- componentDidMount, componentDidUpdate, componentWillUnmount: **useEffect**,.
-
-React elements are immutable. Once you create an element, you can’t change its children or attributes.
-
-### Rendering Elements, Mount and Instancing
-
-React DOM compares the element and its children to the Browser DOM, and only updates the elements that's diffrent.
-
-Reacts elements are immutable objects, they are lika a frame in a move. They can't be changed, only exchanged to a new one.
-
-When a component re-render, it unmounts the first instance and mounts the second.
-While the first instance is unmounted, it still exists in memory and is waiting on the async operation to complete.
-[More on Rendering](https://felixgerschau.com/react-rerender-components/#what-is-rendering).
-
-So why don't we get "Unmounted" errors?
-
-This is because how hooks are designed, each instance of a specific component (and the exact meaning of 'specific' can be a bit murky) shares the same copy of the state setting function, and as long as one instance is mounted, the call will succeed.
-
-While an async operation is pending, you will have multiple instances. When the async function exists, the old instance will be disregarded.
-
-If you were to put that component in a modal, trigger the load and then close the modal, you would get the warning of trying to set state on an unmounted component, as when the modal closes it will remove all mounted instances of the component
-
-### Error Boundries
-
-[Error boundaries](https://reactjs.org/docs/error-boundaries.html) are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of the component tree that crashed.
-
-- Only class components can be error boundaries.
-- Error boundaries do not catch errors inside event handlers.
-
-Why not try/catch?
-
-- Only works for imperative code. React components are declarative and specify what should be rendered.
-
-### Ucontrolled Components
-
-An uncontrolled component keeps the source of truth in the DOM. [Article](https://goshacmd.com/controlled-vs-uncontrolled-inputs-react/). In React, an `<input type="file" />` is always an uncontrolled component because its value can only be set by a user, and not programmatically.
-
-### Ref forwarding
-
-[Ref forwarding](https://reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components) is an opt-in feature that lets some components take a ref they receive, and pass it further down (in other words, “forward” it) to a child.
-This allows a component to reach elements in child components.
-
-## Hooks
-
+- More restrictive then regular functions, Can only be called at tge top of components.
 - Best practice [cheat sheet](https://blog.logrocket.com/react-hooks-cheat-sheet-unlock-solutions-to-common-problems-af4caf699e70/).
 - [React Reference Guide: Hooks API](https://blog.logrocket.com/react-reference-guide-hooks-api/).
 
 ## useState:
 
-- Preserve state between re-renders.
-- Calls to setState are asynchronous, [React diesb't update state until next re-render](https://reactjs.org/docs/faq-state.html#why-is-setstate-giving-me-the-wrong-value).
+- State works like a snapshot, preserving variables between re-renders.
+- Triggers re-render when state changed.
+- Should not be changed directly, use spread syntax to copy objects and arrays.
+- Calls to setState are asynchronous, React doesn't update state until next re-render, so the value cant be used immediately after change. Batching improves performance and prevents half-finished renders with many state changes.
 - setState is stable and won’t change on re-render. This iw why it is safe to exclude from useEffect/useCallback dependency list.
-- you can merge update objects with objective spread syntax.
-- “expensive” initial states, provide a function instead of a value and it will only be executed on initial render.
+- With “expensive” initial states, provide a function instead of a value and it will only be executed on initial render.
+- "Immer" can help making the logic concise.
 
-[Warning: Can't call setState (or forceUpdate) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.](https://www.robinwieruch.de/react-warning-cant-call-setstate-on-an-unmounted-component/)
+#### Tips
+
+- Share state by lifting it up to common parent.
+- Force state reset by passing it a different key.
+- useReducer when things gets complex.
+- useContext when passing data deeply.
+
+##### [Warning: Can't call setState (or forceUpdate) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.](https://www.robinwieruch.de/react-warning-cant-call-setstate-on-an-unmounted-component/)
 
 ### useReducer
 
@@ -101,15 +56,15 @@ Functions defined in the body of your function component get recreated on every 
 
 ### If you can't move a function inside the useEffect:
 
-1. You can try moving that function outside of your component. Then it's guaranteed not to referense props or state.
-2. If the function is a pure computation and is safe to call while renderinf, call it outside the useEffect, and make useEffect dependaant on returned value.
+1. You can try moving that function outside of your component. Then it's guaranteed not to reference props or state.
+2. If the function is a pure computation and is safe to call while rendering, call it outside the useEffect, and make useEffect dependant on returned value.
 3. As a last resort, you can add a function to effect dependencies but wrap its definition into the useCallback Hook. As a last resort, you can add a function to effect dependencies but wrap its definition into the useCallback Hook.
 
 ### If a dependency changes too often
 
-- Don't reference the state value, reference the setValue. It's garanteed to be stable.
+- Don't reference the state value, reference the setValue. It's guaranteed to be stable.
 - In more complex cases (such as if one state depends on another state), try moving the state update logic outside the effect with [the useReducer Hook](https://adamrackis.dev/state-and-use-reducer/).
-- As a last resort, use a ref to hold a mutable value. THis is risky as it might make components less prefictable.
+- As a last resort, use a ref to hold a mutable value. THis is risky as it might make components less predictable.
 
 ### Async and Promises
 
@@ -142,10 +97,10 @@ A DOM mutation that must be visible to the user should be fired synchronously be
 
 Pass an inline callback and an array of dependencies. useCallback will return a memoized version of the callback that only changes if one of the dependencies has changed. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders
 
-- Returns a memorised callback. a cached result.
-- will only change when a dependancy changes.
+- Returns a memorized callback. a cached result.
+- will only change when a dependency changes.
 - Will still be recreated on every render.
-- Is useful when passing callbacks to Optimised Child Components that needs Reference Equality to prevent unnecessary renders.
+- Is useful when passing callbacks to Optimized Child Components that needs Reference Equality to prevent unnecessary renders.
 
 ## useMemo
 
@@ -172,7 +127,7 @@ Lets you manage local state of complex components with a reducer:
 2. Works as a _instance variable_, similar to an instance property on a class, lets you keep a mutable object around.
 3. Will give you the same object every,
 4. Mutating .current does not trigger a re-render.
-5. Commonly refering to a DOM node.
+5. Commonly referring to a DOM node.
 6. A function can be used for initial value, .current(prop) executes the method.
 7. The reference must be updated either inside a useEffect() callback or inside handlers (event handlers, timer handlers, etc).
 
@@ -225,184 +180,4 @@ You can pass information between hooks:
 ```javascript
 const [recipientID, setRecipientID] = useState(1);
 const isRecipientOnline = useFriendStatus(recipientID);
-```
-
-## ADITIONAL NOTES
-
-### Arrow functions in render
-
-Can cause performance issues.
-
-### Create Expensive Object Lazily
-
-Will run on every render :(
-
-```javascript
-function Table(props) {
-  // ⚠️ createRows() is called on every render
-  const [rows, setRows] = useState(createRows(props.count));
-}
-```
-
-To avoid re-creating the ignored initial state, we can pass a function to useState, and the function will only be called the first render.
-
-```javascript
-function Table(props) {
-  const [rows, setRows] = useState(() => createRows(props.count));
-}
-```
-
-You might also occasionally want to avoid re-creating the useRef() initial value. For example, maybe you want to ensure some imperative class instance only gets created once:
-
-```javascript
-function Image(props) {
-  // ⚠️ IntersectionObserver is created on every render
-  const ref = useRef(new IntersectionObserver(onIntersect));
-}
-```
-
-useeRef does not accept a special function overload like useState. Instead, you can write your own function that creates and sets it lazily:
-
-```javascript
-function Image(props) {
-  const ref = useRef(null);
-
-  // IntersectionObserver is created lazily once
-  function getObserver() {
-    if (ref.current === null) {
-      ref.current = new IntersectionObserver(onIntersect);
-    }
-    return ref.current;
-  }
-```
-
-- [How to avoid passing callbacks down?](https://reactjs.org/docs/hooks-faq.html#how-to-avoid-passing-callbacks-down)'
-- [How to read an often-changing value from useCallback?](https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback)
-- [Pevent a function from being called too quickly or too many times in a row?](https://reactjs.org/docs/faq-functions.html#how-can-i-prevent-a-function-from-being-called-too-quickly-or-too-many-times-in-a-row)
-
-React 18 in Next.Js? Still experimental. We are in 17 so far.
-we have react 12.1 since 3 months (march 22)
-
-there are different components in memory, so multiple state?
-
-## React functions
-
-### React.memo HOC
-
-shallowly compare its props.
-
-- If a component renders the same result with the same props.
-- DO NOT use to prevent a render.
-
-- createElement: when not using JSX. why do we have it in code? When merging props for a new element?
-- cloneElement: why is this used? When overriding props?
-- isValidElement()
-- React.Children provides utilities for dealing with the this.props.children opaque data structure.
-
-### React.createRef
-
-Creates a ref that can be attached to elements or class components. Ref attribute does not work on function components, use forwardRef there.
-
-### React.forwardRef
-
-Creates a React component that [forwards the ref attribute](https://reactjs.org/docs/forwarding-refs.html) it receives to another component below in the tree.
-
-### React.lazy
-
-React.lazy() lets you define a component that is loaded dynamically. This helps reduce the bundle size to delay loading components that aren’t used during the initial render.
-
-### React.Suspense
-
-Lets you specify the loading indicator in case some components in the tree below it are not yet ready to render.
-
-## ReactDOM
-
-The react-dom package provides DOM-specific methods that can be used at the top level of your app and as an escape hatch to get outside the React model if you need to.
-
-- [Portals](https://reactjs.org/docs/portals.html): you need the child to visually “break out” of its container. For example, dialogs, hovercards, and tooltips. An event fired from inside a portal will propagate to ancestors in the containing React tree, even if those elements are not ancestors in the DOM tree.
-
-- flushSync(): Force React to flush any updates inside the provided callback synchronously. This ensures that the DOM is updated immediately.
-
-- render(): Render a React element into the DOM in the supplied container and return a reference to the component
-- -hydrate(): Is used to hydrate a container whose HTML contents were rendered by ReactDOMServer. React will attempt to attach event listeners to the existing markup.
-
-## ReactDOMClient
-
-The react-dom/client package provides client-specific methods used for initializing an app on the client. Most of your components should not need to use this module.
-
-## ReactDOMServer
-
-The ReactDOMServer object enables you to render components to static markup.
-
-- renderToString(element): Render a React element to its initial HTML. React will return an HTML string.
-
-### Browser Painting
-
-1. Browser creates the DOM and CSSOM.
-2. Browser creates the render tree, where the DOM and styles from the CSSOM are taken into account (display: none elements are avoided).
-3. Browser computes the geometry of the layout and its elements based on the render tree.
-4. Browser **paints** pixel by pixel to create the visual representation we see on the screen.
-
-[^flushing]: Flushing forces complete re-rendering for updates that happen inside of a call.
-
-```typescript
-useEffect(() => {
-  let didCancel = false;
-
-  const fetchData = async () => {
-    dispatch({ type: "FETCH_INIT" });
-
-    try {
-      const result = await axios(url);
-
-      if (!didCancel) {
-        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
-      }
-    } catch (error) {
-      if (!didCancel) {
-        dispatch({ type: "FETCH_FAILURE" });
-      }
-    }
-  };
-
-  fetchData();
-
-  return () => {
-    didCancel = true;
-  };
-}, [url]);
-```
-
-```typescript
-const [state, dispatch] = useReducer(dataFetchReducer, {
-  isLoading: false,
-  isError: false,
-  data: initialData,
-});
-
-const dataFetchReducer = (state, action) => {
-  switch (action.type) {
-    case "FETCH_INIT":
-      return {
-        ...state,
-        isLoading: true,
-        isError: false,
-      };
-    case "FETCH_SUCCESS":
-      return {
-        ...state,
-        isLoading: false,
-        isError: false,
-        data: action.payload,
-      };
-    case "FETCH_FAILURE":
-      return {
-        ...state,
-        isLoading: false,
-        isError: true,
-      };
-    default:
-      throw new Error();
-  }
-};
 ```
