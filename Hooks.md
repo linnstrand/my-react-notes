@@ -21,6 +21,23 @@
 - useReducer when things gets complex.
 - useContext when passing data deeply.
 
+#### Create Expensive Object Lazily
+
+```javascript
+function Table(props) {
+  // createRows() is called on every render
+  const [rows, setRows] = useState(createRows(props.count));
+}
+```
+
+To avoid re-creating the ignored initial state, we can pass a function to useState, and the function will only be called the first render.
+
+```javascript
+function Table(props) {
+  const [rows, setRows] = useState(() => createRows(props.count));
+}
+```
+
 ##### [Warning: Can't call setState (or forceUpdate) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.](https://www.robinwieruch.de/react-warning-cant-call-setstate-on-an-unmounted-component/)
 
 ### useReducer
@@ -36,23 +53,33 @@
 
 ## useEffect
 
-When you call useEffect, you’re telling React to run your “Effect” Function after [flushing](flushing) changes to the DOM.
-By default, React runs the effects after every render, including the first render.
+By default, React runs the effects after every render, including the first render. Typically used to syncronize component with system outside of React.
+
+- Use when its not a pure calculation or triggered event.
+- Code inside useEffect are not run in inital rendering calculation, when there is no DOM. Wrap with useEffect when variables interact with dom (like ref.current).
 
 [Article](https://blog.logrocket.com/guide-to-react-useeffect-hook/).
 
-Functions defined in the body of your function component get recreated on every render cycle. Always use for async tasks.
-
 - Runs after browser has [painted](#browser-painting).
 - Doesn't block UI.
-- Tells React that your component needs to do something after render.
-- The Effect Function is different on every render. Every render creates a different effect. ???
+- Runs twice in dev.
+- The Effect Function is different on every render. Every render creates a different effect.
 - The array contains the changes that triggers useEffect. You must use all values from the component scope that
   - changes over time
   - are used by useEffect to avoid stale reference value
 - The props and state will only have initial values.
 
-**what happens before mount? why. would we wait? What can we do directly in the root component?**
+### Do not use...
+
+- Data Transform: useEffects restarts the whole process of deciding what should be on the screen, commit and render when it updates state. Transform the data on top level.
+- User events should use use event handlers, not useEffect.
+- For updating state based on props/state. calculate it during render. If calculation is expensive, use useMemo (messure with console.time).
+- For resetting states. Instead use a key on the component.
+- For adjusting state during render. Do it directly in top layer, with a previousValue useState.
+- In chains. use event handler instead. Unless it can't be done in event handler, like forms with dependencies between fields.
+- Initializing the app. Instead run functons during module initialization before app renders.
+- Subscribing to external store, like a third party library or built-in browser API. Instead use `useSyncExternalStore`
+- Fetch data. Use framework library or custom hook.
 
 ### If you can't move a function inside the useEffect:
 
@@ -72,9 +99,11 @@ A useEffect hook should return nothing or a cleanup function. This is why it can
 
 ### Cleanup
 
-Cleanup functions are not only invoked before destroying the React component. An effect’s cleanup function gets invoked every time, right before the execution of the next scheduled effect.
+- Cleanup functions are not invoked every render before the execution of the useEffect code.
+- Use cleanup functions if dev mode double render causes issues.
+- If a response arrives after cleanup sets a variable to 'ignore', the awaited execution can be ignored.
 
-- Remove event listeners, subscriptions, intervals...
+- Remove event listeners, subscriptions, intervals, animation resets...
 
 ### Dangers!
 
