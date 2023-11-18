@@ -127,6 +127,7 @@ A DOM mutation that must be visible to the user should be fired synchronously be
 Pass an inline callback and an array of dependencies. useCallback will return a memoized version of the callback that only changes if one of the dependencies has changed. This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders
 
 - Returns a memorized callback. a cached result.
+- Stable Reference.
 - will only change when a dependency changes.
 - Will still be recreated on every render.
 - Is useful when passing callbacks to Optimized Child Components that needs Reference Equality to prevent unnecessary renders.
@@ -167,7 +168,39 @@ Lets you manage local state of complex components with a reducer:
 - Updating a reference doesn't trigger a re-render.
 - Reference update is synchronous, while state is updated after re-rendering. This might be a problem if you want a ref to change after render. If that's the case, useEffect can delay the update until after mounting. [Focusing on input example](https://dmitripavlutin.com/react-useref-guide/#21-use-case-focusing-an-input).
 
-Unless you’re doing lazy initialization, avoid setting refs during rendering — this can lead to surprising behavior. ????
+### Refs
+
+- When a component should remember some information, but the information shouldn't trigger new render, use ref.
+- When information is only needed for event handlers, a ref might be more efficient then useState.
+- Storing and manipulating DOM elements.
+
+[Ref forwarding](https://reactjs.org/docs/forwarding-refs.html#forwarding-refs-to-dom-components) is an opt-in feature that lets some components take a ref they receive, and pass it further down (in other words, “forward” it) to a child.
+This allows a component to reach elements in child components.
+
+You might also occasionally want to avoid re-creating the useRef() initial value. For example, maybe you want to ensure some imperative class instance only gets created once:
+
+```javascript
+function Image(props) {
+  // ⚠️ IntersectionObserver is created on every render
+  const ref = useRef(new IntersectionObserver(onIntersect));
+}
+```
+
+useeRef does not accept a special function overload like useState. Instead, you can write your own function that creates and sets it lazily:
+
+```javascript
+function Image(props) {
+  const ref = useRef(null);
+
+  // IntersectionObserver is created lazily once
+  function getObserver() {
+    if (ref.current === null) {
+      ref.current = new IntersectionObserver(onIntersect);
+    }
+    return ref.current;
+  }
+}
+```
 
 ## useContext
 
@@ -176,13 +209,7 @@ Context is primarily used when some data needs to be accessible by many componen
 Accepts a context object (the value returned from React.createContext) and returns the current context value for that context. The current context value is determined by the value prop of the nearest <MyContext.Provider> above the calling component in the tree.
 When the nearest <MyContext.Provider> above the component updates, this Hook will trigger a rerender with the latest context value passed to that MyContext provider. Even if an ancestor uses React.memo, a rerender will still happen starting at the component itself using useContext.
 
-A component calling useContext will always re-render when the context value changes. If re-rendering the component is expensive, you can optimize it by using memoization.
-
-Optimization
-
-1. (Preferred): Split contexts that don't change together.
-2. Split your component in two, put memo in between. The outer still re-renders but the expensive inner one wont.
-3. One component with useMemo inside. Keeping it in a single component by wrapping return value in useMemo and specifying its dependencies. Our component would still re-execute, but React wouldn't re-render the child tree if all useMemo inputs are the same.
+A component using a Context will always re-render when the context value changes.
 
 ### useImperativeHandle
 
