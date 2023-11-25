@@ -53,14 +53,14 @@ function Table(props) {
 
 ## useEffect
 
-By default, React runs the effects after every render, including the first render. Typically used to syncronize component with system outside of React.
+By default, React runs the effects after every render, including the first render. Typically used to synchronize component with system outside of React.
 
 - Use when its not a pure calculation or triggered event.
-- Code inside useEffect are not run in inital rendering calculation, when there is no DOM. Wrap with useEffect when variables interact with dom (like ref.current).
+- Code inside useEffect are not run in initial rendering calculation, when there is no DOM. Wrap with useEffect when variables interact with dom (like ref.current).
 
 [Article](https://blog.logrocket.com/guide-to-react-useeffect-hook/).
 
-- Runs after browser has [painted](#browser-painting).
+- Runs after browser has painted.
 - Doesn't block UI.
 - Runs twice in dev.
 - The Effect Function is different on every render. Every render creates a different effect.
@@ -73,13 +73,13 @@ By default, React runs the effects after every render, including the first ren
 
 - Data Transform: useEffects restarts the whole process of deciding what should be on the screen, commit and render when it updates state. Transform the data on top level.
 - User events should use use event handlers, not useEffect.
-- For updating state based on props/state. calculate it during render. If calculation is expensive, use useMemo (messure with console.time).
+- For updating state based on props/state. calculate it during render. If calculation is expensive, use useMemo (measure with console.time).
 - For resetting states. Instead use a key on the component.
 - For adjusting state during render. Do it directly in top layer, with a previousValue useState.
 - In chains. use event handler instead. Unless it can't be done in event handler, like forms with dependencies between fields.
-- Initializing the app. Instead run functons during module initialization before app renders.
+- Initializing the app. Instead run functions during module initialization before app renders.
 - Subscribing to external store, like a third party library or built-in browser API. Instead use `useSyncExternalStore`
-- Fetch data. Use framework library or custom hook.
+- Fetch data. useEffect delays data fetching until app is rendered. This slows the app by requiring download and render off app before data fetch can be started. There is also a risk of "network waterfalls". useEffects means data isn't preloaded or cached, and retried on every mount/umount. Risk for race conditions (responses arrives in unexpected order). Instead, try to use frameworks built in data fetching mechanisms. Libraries like can also do client side cache, see React Query, React Router, useSWR.
 
 ### If you can't move a function inside the useEffect:
 
@@ -109,9 +109,21 @@ A useEffect hook should return nothing or a cleanup function. This is why it can
 
 You cant access current state inside useEffect: [UseEffect And Stale Closures](https://medium.com/edonec/useeffect-and-stale-closures-ea74df7ac452), [Hooks, Dependencies and Stale Closures](https://tkdodo.eu/blog/hooks-dependencies-and-stale-closures)
 
+## Unmounting errors
+
+While an async operation is pending, you will have multiple instances. When the async function exists, the old instance will be disregarded.
+
+If you were to put that component in a modal, trigger the load and then close the modal, you would get the warning of trying to set state on an unmounted component, as when the modal closes it will remove all mounted instances of the component
+
+##### So why don't we get "Unmounted" errors?
+
+This is because how hooks are designed, each instance of a specific component shares the same copy of the state setting function, and as long as one instance is mounted, the call will succeed.
+
+[More on Rendering](https://felixgerschau.com/react-rerender-components/#what-is-rendering).
+
 ### useLayoutEffect
 
-For DOM mutations that are visible to the user. The signature is identical to useEffect, but it fires synchronously after all DOM mutations. Use this to read layout from the DOM and synchronously re-render. Updates scheduled inside useLayoutEffect will be flushed, [^flushing] synchronously, before the browser has a chance to paint.
+For DOM mutations that are visible to the user. The signature is identical to useEffect, but it fires synchronously after all DOM mutations. Use this to read layout from the DOM and synchronously re-render. Updates scheduled inside useLayoutEffect will be flushed, synchronously, before the browser has a chance to paint.
 In simplified terms, useLayoutEffect doesn’t really care whether the browser has painted the DOM changes or not. It triggers the function right after the DOM mutations are computed.
 
 #### Why do we care?

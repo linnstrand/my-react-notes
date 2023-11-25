@@ -33,7 +33,7 @@ React has four built-in methods that gets called, in this order, when mounting a
 
 #### Event handlers
 
-- Event handlers should recieve a method, not a executed method. use `() => Method()` if you dont want to pass the whole event to the handler.
+- Event handlers should receive a method, not a executed method. use `() => Method()` if you don't want to pass the whole event to the handler.
 - Event propagation. All events except onScroll propagate. Preventable with e.stopPropagation().
 - Default behavior: `form` elements submit are triggered by any button inside it by default.
 
@@ -62,7 +62,7 @@ An uncontrolled component keeps the source of truth in the DOM. [Article](https:
 - Avoid nested states. Flatten (normalize) the data.
 
 Avoid redundant states by calculating value during render. Local variables wont trigger re-render.
-Calculate the cost, and only memoize if it is above 1ms. Confirm that useMemo actually improves performance. When running this test, trottle CPU.
+Calculate the cost, and only memoize if it is above 1ms. Confirm that useMemo actually improves performance. When running this test, throttle CPU.
 
 ```ts
 console.time("timer name");
@@ -80,7 +80,7 @@ console.timeEnd("timer name");
 
 #### Pass Deep
 
-- Prop drilling can make flow and dependancies explicit.
+- Prop drilling can make flow and dependencies explicit.
 - Typical use-cases: Theming, current user, state that should trigger re-renders.
 
 #### Object Mutations
@@ -110,7 +110,7 @@ For deeply nested logic, consider Immer.
 
 ## Rendering
 
-The calling of the component as a function.
+The calling of the component as a function. Re-rendering does not always mean repainting of the browser DOM.
 
 - Triggers: Initial render, change of state, change of ancestors' state.
   - Changing state causes re-rendering of the component and its children.
@@ -120,7 +120,7 @@ The calling of the component as a function.
 - When rendering is done, the browser will paint.
 
 Controlling Rerenders: React.memo prevents React hook components from rendering when the props doesn't change.
-{children} doesnt re-render when wrapping element does. UNLESS you use a memoized component.
+{children} doesn't re-render when wrapping element does. UNLESS you use a memoized component.
 
 ### Error Boundaries
 
@@ -135,13 +135,15 @@ Class Component: React components that catch JavaScript errors anywhere in their
 
 ## React API
 
-### React.memo HOCS
+### React.memo
 
 memo lets you skip re-rendering a component if the props are unchanged.
 
 - shallowly compare its props.
 - DO NOT use to prevent a render.
-- a memo can use a comparason function when its infeasable to minimize the prop changes.
+- a memo can use a comparison function when its infeasible to minimize the prop changes.
+- Optimizing with memo is only valuable when your component re-renders often with the same exact props, and its re-rendering logic is expensive.
+- A passed object/function is always different. Use useMemo and useCallback with memo.
 
 ### React.createRef
 
@@ -173,20 +175,20 @@ Lets yoy render some children into a different part of the DOM. Useful to place 
 - createRoot: replaces render in React 18.
 - hydrateRoot: replaces hydrate in React 18.
 
-## React built in omponents
+## React built in components
 
 ### \<Profiler>
 
-Lets you messure rendering performance of a React Tree.
+Lets you measure rendering performance of a React Tree.
 
 ### \<StrictMode>
 
 - Helps with finding common bugs during development.
-- Re-render an extra time to find bugs caused by inpure rendering.
+- Re-render an extra time to find bugs caused by unpure rendering.
 - Causes Effects to run twice, finding bugs caused by missing Effect cleanup.
 
 ### \<Suspense>
 
-Documentation does not make much sense at November 2023. Refers to Next.js thatrefers back to React.
+Documentation does not make much sense at November 2023. Refers to Next.js Thereafter back to React.
 
 - Only Suspense-enabled data sources will activate the Suspense component.

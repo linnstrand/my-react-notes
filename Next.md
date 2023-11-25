@@ -1,6 +1,10 @@
-# Next.js 13+
+# Next.js
 
-App or Pages
+- Server Side Rendering: React points to frameworks like Nextjs in its Documentation for Server Components.
+
+## vs vanilla react
+
+13+: App or Pages
 
 ## app Router
 
