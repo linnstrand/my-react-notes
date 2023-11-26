@@ -2,6 +2,11 @@
 
 ## Libraries and Extensions
 
+### Cypress
+
+[Web Performance Testing with Google Lighthouse](https://www.testingwithmarie.com/post/web-performance-testing-with-google-lighthouse)
+[Testing the DOM](https://github.com/cypress-io/cypress-example-recipes#testing-the-dom)
+
 ### React Dev Tools
 
 - [an overview of the react profiler with refactoring](https://www.youtube.com/watch?v=ISins9sgCrM&t=242s)
@@ -13,10 +18,10 @@
 
 ## Documentation
 
-[React-Typescript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup)
-[React Handbook](https://reacthandbook.dev/)
-
+- [React-Typescript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/docs/basic/setup)
+- [React Handbook](https://reacthandbook.dev/)
 - [You might not need an Effect](https://react.dev/learn/you-might-not-need-an-effect): The React article that wow'd me.
+- [MDN's Web API specifications](https://developer.mozilla.org/en-US/docs/Web/API)
 
 ## Blogs
 
@@ -33,3 +38,10 @@
 - [Firebase](https://www.youtube.com/watch?v=HyWYpM_S-2c): Fast and Funny.
 - [Beyond Firebase](https://www.youtube.com/watch?v=0fONene3OIA) More in depth.
 - [Theo](https://www.youtube.com/watch?v=NCBTRQoF9hc) Lots of opinions, but interesting.
+
+## Articles
+
+[Behind the Scenes of High-Performing React Apps: An In-Depth Guide](https://www.dhiwise.com/post/behind-the-scenes-of-high-performing-react-apps-an-in-depth-guide)
+[How To Measure and Monitor React Render Performance](https://3perf.com/blog/react-monitoring/)
+[Performance budgets 101](https://web.dev/articles/performance-budgets-101)
+[Progressive Web Apps](https://web.dev/explore/progressive-web-apps)

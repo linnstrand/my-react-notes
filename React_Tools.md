@@ -40,7 +40,7 @@ Concerts source code from one version of a language to another without changing 
 
 Babel, SWC.
 
-## Linting
+### Linting
 
 SonerQube?
 
@@ -51,7 +51,7 @@ For React: `eslint-plugin-react-hooks`. CRA comes with `eslint-config-react-app`
 Included in Next.js: [ESLint plugin](https://nextjs.org/docs/pages/building-your-application/configuring/eslint#eslint-plugin).
 `eslint-plugin-jsx-a11y` to help catch accessibility issues
 
-### MUI Eslint
+#### MUI Eslint
 
 Using [AirBnB Style](https://github.com/airbnb/javascript), see the MUI
 [eslintrc](https://github.com/mui/material-ui/blob/master/.eslintrc.js) file.
@@ -71,22 +71,40 @@ plugins
 
 - eslint-plugin-material-ui
 - eslint-plugin-react-hooks
-- @typescript-eslint/eslint-plugin
+- @typescript-eslint/eslint-plugin"
 - eslint-plugin-filenames
 
 Standards: AirBnB
 
-## Formatting
+### Formatting
 
 Prettier: should format code, but don't bother with the rules.
 [Eslint Stylistic](https://eslint.style/guide/why) is an alternative.
 
-## Repository Quality
+### Repository Quality
 
 - Husky: For feature branches, I like being able to commit flawed code. Its better to have lint, build and test tools that looks at the code quality.
 - lint-staged: Could be alternative to husky. But I prefer it as part of build/test to not break workflows.
 - Use `prettier --check` for your continuous integration.
 - install esbenp.prettier-vscode, and use format on save.
+
+## Web Workers
+
+Performs background tasks in separate threads.
+
+- **Complex Calculations:** Web workers are ideal for performing complex mathematical calculations or data processing tasks without impacting the main thread.
+- **Large Data Handling:** When dealing with large datasets or files, web workers can help process and parse the data in the background.
+- **Background Services:** Web workers can be used to run background services such as periodic data synchronization or background notifications.
+  [Using Web Workers in React](https://www.dhiwise.com/post/power-of-web-workers-in-react-for-improved-user-experience),
+  [Web Workers API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API).
+
+## Web Services
+
+To build progressive web apps. [Article](https://dev.to/llleeeaaannn/vanilla-service-workers-in-react-138).
+
+- **Background sync**
+- **Push notifications**
+- **Caching strategies for offline support**
 
 ## Storybook
 

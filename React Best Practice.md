@@ -25,15 +25,67 @@
 - Code Review: Smaller files makes for clearer differences and reduces merge conflicts.
 - DRY, but KISS. Sometimes repeated code is better then complex abstraction.
 
+### Small component trees.
+
+- React needs to diff the entire tree every time state changes.
+
 ## Performance
 
-- The Profiler react component can be used to measure.
-- the Profiler tab in React Developer Tools exposes similar functionality as the Profiler component.
+1. **React DevTools:**
+
+   - Use "Components" tab to inspect the component hierarchy and track component updates.
+   - Use the "Profiler" tab to analyze the performance of specific parts of your application and identify components that re-render frequently.
+
+2. **Google Lighthouse**
+
+   - Lighthouse provides audits for performance, accessibility, best practice, etc.
+   - Receive a comprehensive report on various aspects of your web application's performance.
+
+3. **Performance Timeline**
+
+   - Record a performance profile and analyze the timeline to identify rendering bottlenecks and excessive re-renders.
+   - Visualize the timeline of various events during application execution.
+   - Identify tasks that consume significant time during rendering.
+   - Inspect layout and paint operations.
+
+4. **Network Activity:**
+
+   - Use to analyze the loading times of resources.
+   - Identify potential bottlenecks in data fetching and API requests.
+   - Use it to understand the impact of network requests on overall application performance and optimize data fetching strategies.
+
+5. **React Strict Mode:**
+
+   - Detect and log common mistakes such as side effects during rendering.
+   - Highlight potential issues with deprecated lifecycle methods.
+
+6. **React Profiler API:**
+
+   - Wrap the code you want to profile in a `Profiler` component to identify components that need optimization.
+   - Gain fine-grained insights into component rendering performance.
+
+7. **Performance.now() and Console Logging:**
+
+   - Insert `console.log` statements with `Performance.now()` to measure the time taken by specific code blocks.
+   - Measure the time taken by specific operations.
+
+8. **Bundle Analysis Tools:**
+
+   - Use tools like `source-map-explorer`, `vite-bundle-visualizer`, `nx graph` to analyze your application.
+   - Integrate with your build process to generate reports.
+   - Identify large dependencies contributing to bundle size.
+   - Optimize imports and remove unnecessary dependencies.
+
+### Actions
+
 - SSR can speed up initial loads to improve time-to-interactivity.
 - Avoid request waterfalls, where a request have to finish before another is started. Can be avoided with pre-fetching.
   - libraries like react-query helps avoid prefetching data.
 - Tools like DataDog, Grafana, Prometheus can track performance and infrastructure metrics.
 - Establish alerting thresholds for critical performance metrics.
+- Use Immer for immutable data structures, which allows us to make changes to out state without creating new arrays or objects.
+- Use Web Workers to perform heavy computations.
+- Use Service workers for caching.
 
 ## Optimization
 

@@ -189,7 +189,7 @@ type FeatureOptions = {
 
 #### Key Remapping via `as`
 
-Things can get cool with template literal strings. Construct functions from keys opor values
+Things can get cool with template literal strings.
 
 ```typescript
 type Getters<Type> = {
@@ -214,12 +214,12 @@ type GetPerson = {
 
 // You can filter out keys by producing never via a conditional type
 type RemoveKindField<Type> = {
-  [Property in keyof Type as Exclude<Property, 'kind'>]: Type[Property];
+  [Property in keyof Type as Exclude<Property, "kind">]: Type[Property];
 };
 
 // properties from values.
 type EventConfig<Events extends { kind: string }> = {
-  [E in Events as E['kind']]: (event: E) => void;
+  [E in Events as E["kind"]]: (event: E) => void;
 };
 ```
 
@@ -242,10 +242,10 @@ type EventConfig<Events extends { kind: string }> = {
 
 ```typescript
 const statusTypes: Record<Status, { icon: string; color: string }> = {
-  not_started: { icon: 'icon-not-started', color: 'gray' },
-  progress: { icon: 'icon-progress', color: 'orange' },
-  completed: { icon: 'icon-completed', color: 'green' },
-  failed: { icon: 'icon-failed', color: 'red' },
+  not_started: { icon: "icon-not-started", color: "gray" },
+  progress: { icon: "icon-progress", color: "orange" },
+  completed: { icon: "icon-completed", color: "green" },
+  failed: { icon: "icon-failed", color: "red" },
 };
 ```
 
