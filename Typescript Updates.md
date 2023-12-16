@@ -1,5 +1,11 @@
 # Typescript Updates highlights
 
+## Typescript 5.3 November 2023
+
+- Import Attributes. Provide information about the expected format. Like json or images. Also for dynamic imports.
+- TypeScript can now perform narrowing in switch(true) for type checking statements!!
+- Inlay hints: Improving DX in VS Code for TS.
+
 ## version 5.2 August 2023
 
 - Easier method usage for unions of arrays.

@@ -270,28 +270,11 @@ const statusTypes: Record<Status, { icon: string; color: string }> = {
 - Capitalize<StringType>
 - Uncapitalize<StringType>
 
-## Extra
+## "as const
 
-#### Decorators @
+- You should not have multiple sources of truth for a type.
+- "as const" makes a object readonly.
+- Alternative to enums.
+- Different to Object.freeze, because freeze is shallow.
 
-Declaration that can be attached to a class declaration, method, accessor, property, or parameter.
-Common in Vue and Angular.
-
-#### Declaration Merging
-
-- Interfaces with the same name mare merged
-
-#### Iterables
-
-- For..of: returns values.
-- For..in returns list of keys.
-
-#### JSX
-
-- XLM-like syntax meant to be transformed into JS.
-- Intrinsic Elements: A jsx expression may either refer to something intrinsic to the environment (div or span for DOM) or a custom component.
-  Value-based elements: looked up by identifiers in scope. Function or Class Components.
-
-#### Modules
-
-Via import/export
+- (typeof)[keyof keyof]
